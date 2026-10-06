@@ -1,0 +1,35 @@
+---
+const phrases = [
+  'CATÁLOGO ABIERTO',
+  'MODELOS DISPONIBLES',
+  'CONSULTA EL PERFIL',
+  'SELECCIONA UNA MODELO',
+];
+---
+
+<div class="overflow-hidden border-y-2 border-red-600 bg-red-600 text-black">
+  <div class="flex min-w-max animate-[marquee_18s_linear_infinite]">
+    {Array.from({ length: 2 }).map(() => (
+      <div class="flex shrink-0">
+        {phrases.map((phrase) => (
+          <span class="px-8 py-4 text-xl font-black uppercase tracking-tight md:text-3xl">
+            {phrase}
+            <span class="ml-8">✦</span>
+          </span>
+        ))}
+      </div>
+    ))}
+  </div>
+</div>
+
+<style>
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+
+    to {
+      transform: translateX(-50%);
+    }
+  }
+</style>

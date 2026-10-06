@@ -1,0 +1,187 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import Gallery from '../../components/Gallery.astro';
+
+export async function getStaticPaths() {
+  const modelos = await getCollection('modelos');
+
+  return modelos.map((modelo) => ({
+    params: {
+      slug: modelo.data.slug,
+    },
+    props: {
+      modelo,
+    },
+  }));
+}
+
+const { modelo } = Astro.props;
+const { Content } = await render(modelo);
+---
+
+<Layout title={`${modelo.data.name} | DumpCatalog`}>
+  <main class="min-h-screen bg-black text-white">
+
+    <!-- HERO DEL PERFIL -->
+    <section class="border-b border-zinc-800">
+      <div class="mx-auto grid max-w-7xl md:grid-cols-2">
+
+        <!-- IMAGEN PRINCIPAL -->
+        <div class="relative bg-zinc-950">
+          <img
+            src={modelo.data.profileImage}
+            alt={modelo.data.name}
+            class="aspect-[3/4] h-full w-full object-cover"
+          />
+
+          {modelo.data.featured && (
+            <span class="absolute left-5 top-5 bg-red-600 px-4 py-2 text-xs font-black uppercase tracking-widest">
+              Destacada
+            </span>
+          )}
+        </div>
+
+        <!-- INFORMACIÓN -->
+        <div class="flex flex-col justify-center px-6 py-16 md:px-12 lg:px-16">
+
+          <a
+            href="/modelos"
+            class="mb-10 text-xs font-black uppercase tracking-widest text-zinc-500 transition hover:text-red-500"
+          >
+            ← Volver al catálogo
+          </a>
+
+          <p class="text-xs font-black uppercase tracking-[0.4em] text-red-600">
+            DumpCatalog / Perfil
+          </p>
+
+          <h1 class="mt-4 text-6xl font-black uppercase leading-[0.85] tracking-[-0.05em] md:text-8xl">
+            {modelo.data.name}
+          </h1>
+
+          {modelo.data.subtitle && (
+            <p class="mt-6 text-sm font-bold uppercase tracking-widest text-zinc-400">
+              {modelo.data.subtitle}
+            </p>
+          )}
+
+          <p class="mt-8 text-lg leading-relaxed text-zinc-400">
+            {modelo.data.description}
+          </p>
+
+          <!-- TAGS -->
+          <div class="mt-8 flex flex-wrap gap-2">
+            {modelo.data.tags.map((tag) => (
+              <span class="border border-zinc-700 px-3 py-2 text-[10px] font-black uppercase tracking-widest text-zinc-300">
+                #{tag}
+              </span>
+            ))}
+          </div>
+
+          <!-- CTA -->
+          <a
+            href="#contacto"
+            class="mt-10 inline-flex justify-center border-2 border-red-600 bg-red-600 px-6 py-5 text-sm font-black uppercase tracking-widest transition hover:bg-transparent hover:text-red-500"
+          >
+            Usar esta modelo
+          </a>
+
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- INFORMACIÓN -->
+    <section class="border-b border-zinc-800 px-6 py-16">
+      <div class="mx-auto max-w-7xl">
+
+        <div class="mb-8">
+          <p class="text-xs font-black uppercase tracking-[0.4em] text-red-600">
+            Información
+          </p>
+
+          <h2 class="mt-2 text-4xl font-black uppercase tracking-tight md:text-5xl">
+            Perfil
+          </h2>
+        </div>
+
+        <article class="max-w-4xl text-lg leading-relaxed text-zinc-400">
+          <Content />
+        </article>
+
+      </div>
+    </section>
+
+
+    <!-- GALERÍA -->
+    <Gallery
+  photos={modelo.data.photos}
+  name={modelo.data.name}
+/>
+
+
+    <!-- VIDEOS -->
+    {modelo.data.videos.length > 0 && (
+      <section class="border-b border-zinc-800 px-6 py-16">
+        <div class="mx-auto max-w-7xl">
+
+          <div class="mb-8">
+            <p class="text-xs font-black uppercase tracking-[0.4em] text-red-600">
+              Media
+            </p>
+
+            <h2 class="mt-2 text-4xl font-black uppercase tracking-tight md:text-5xl">
+              Videos
+            </h2>
+          </div>
+
+          <div class="grid gap-6 md:grid-cols-2">
+
+            {modelo.data.videos.map((video) => (
+              <video
+                controls
+                preload="metadata"
+                class="w-full bg-zinc-950"
+              >
+                <source src={video} />
+                Tu navegador no soporta video.
+              </video>
+            ))}
+
+          </div>
+
+        </div>
+      </section>
+    )}
+
+
+    <!-- CTA FINAL -->
+    <section id="contacto" class="px-6 py-24">
+      <div class="mx-auto max-w-5xl border-2 border-red-600 bg-zinc-950 px-6 py-16 text-center md:px-12">
+
+        <p class="text-xs font-black uppercase tracking-[0.4em] text-red-600">
+          DumpCatalog
+        </p>
+
+        <h2 class="mt-4 text-5xl font-black uppercase leading-none tracking-tight md:text-7xl">
+          {modelo.data.name}
+        </h2>
+
+        <p class="mx-auto mt-6 max-w-xl text-zinc-400">
+          Consulta la información disponible de este perfil.
+        </p>
+
+        <button
+          type="button"
+          class="mt-8 border-2 border-red-600 bg-red-600 px-8 py-5 text-sm font-black uppercase tracking-widest transition hover:bg-transparent hover:text-red-500"
+        >
+          Usar esta modelo ahora
+        </button>
+
+      </div>
+    </section>
+
+  </main>
+</Layout>
